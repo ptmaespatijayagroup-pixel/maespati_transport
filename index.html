@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maespati Transport - Layanan Transportasi Pariwisata Solo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#1e40af', // Blue 800
+                        secondary: '#f59e0b', // Amber 500
+                        dark: '#1e293b', // Slate 800
+                        light: '#f8fafc', // Slate 50
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Smooth scrolling untuk jangkar link */
+        html { scroll-behavior: smooth; }
+        
+        /* Custom scrollbar untuk sidebar */
+        .sidebar-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .sidebar-scroll::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+        }
+        .sidebar-scroll::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+        }
+        
+        /* Sembunyikan sidebar di mobile secara default, tampilkan dengan class */
+        @media (max-width: 768px) {
+            .sidebar-open { transform: translateX(0%); }
+            .sidebar-closed { transform: translateX(-100%); }
+            /* Sesuaikan margin konten utama di mobile */
+            .main-content { margin-left: 0 !important; }
+        }
+    </style>
+</head>
+<body class="bg-light text-gray-800 font-sans flex min-h-screen">
+
+    <!-- Mobile Top Bar & Menu Button -->
+    <div class="md:hidden fixed top-0 left-0 w-full z-50 bg-white/95 backdrop-blur shadow-md px-5 py-3 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <!-- LOGO FOTO MOBILE (Aset Lokal) -->
+            <!-- PETUNJUK: Ganti 'logo.png' dengan nama file logo Anda di folder yang sama (Bisa berupa .png, .jpg, atau .jpeg) -->
+            <img src="logo.png" alt="Logo Maespati Mobile" class="w-10 h-10 object-contain flex-shrink-0" onerror="this.style.display='none';">
+            <h1 class="text-xl font-bold text-primary tracking-wide">MAESPATI <span class="text-secondary text-base">Transport</span></h1>
+        </div>
+        <button id="mobileMenuBtn" class="bg-primary text-white p-2 px-3 rounded-md shadow hover:bg-blue-700 transition duration-300 focus:outline-none">
+            <i class="fas fa-bars text-lg"></i>
+        </button>
+    </div>
+
+    <!-- Sidebar Navigation -->
+    <nav id="sidebar" class="bg-primary text-white w-64 fixed h-full z-40 transition-transform duration-300 ease-in-out flex flex-col sidebar-closed md:translate-x-0 md:sidebar-open sidebar-scroll overflow-y-auto">
+        <div class="p-6 border-b border-blue-900 flex flex-col items-center text-center relative">
+            <!-- Close Button untuk Mobile Sidebar -->
+            <button id="closeMenuBtn" class="md:hidden absolute top-4 right-4 text-blue-200 hover:text-white transition duration-200">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+
+            <!-- LOGO FOTO UTAMA SIDEBAR (Aset Lokal) -->
+            <!-- PETUNJUK: Ganti 'logo.png' dengan nama file logo Anda di folder yang sama (Bisa berupa .png, .jpg, atau .jpeg) -->
+            <div class="mb-4 transform hover:scale-105 transition-transform duration-300">
+                <img src="logo.png" alt="Logo Maespati Transport" class="w-24 h-24 object-contain" onerror="this.style.display='none';">
+            </div>
+            
+            <div>
+                <h1 class="text-2xl font-bold text-secondary tracking-wider">MAESPATI</h1>
+                <p class="text-sm text-blue-200">Transport</p>
+            </div>
+        </div>
+        
+        <ul class="flex-grow py-6 space-y-2">
+            <li>
+                <a href="#home" class="block py-3 px-6 text-white hover:bg-blue-900 transition duration-200 border-l-4 border-transparent hover:border-white flex items-center gap-3">
+                    <i class="fas fa-home w-5 text-center"></i> Beranda
+                </a>
+            </li>
+            <li>
+                <a href="#layanan" class="block py-3 px-6 text-white hover:bg-blue-900 transition duration-200 border-l-4 border-transparent hover:border-white flex items-center gap-3">
+                    <i class="fas fa-car w-5 text-center"></i> Layanan Kami
+                </a>
+            </li>
+            
+            <li class="relative">
+                <button id="btnDaftarHarga" class="w-full text-left py-3 px-6 text-white hover:bg-blue-900 transition duration-200 border-l-4 border-transparent flex justify-between items-center group focus:outline-none">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-tags w-5 text-center"></i> Daftar Harga
+                    </div>
+                    <i id="iconDaftarHarga" class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
+                </button>
+                
+                <!-- Sub-menu Dropdown (Membuka file HTML terpisah) -->
+                <ul id="dropdownDaftarHarga" class="hidden bg-blue-900/50 flex-col overflow-hidden transition-all duration-300">
+                    <li>
+                        <a href="sewamobil.html" class="block py-2 pl-14 pr-6 text-blue-100 hover:text-white hover:bg-blue-800 transition duration-200 text-sm">
+                            <i class="fas fa-car-side mr-2"></i> Sewa Mobil
+                        </a>
+                    </li>
+                    <li>
+                        <a href="sewamotor.html" class="block py-2 pl-14 pr-6 text-blue-100 hover:text-white hover:bg-blue-800 transition duration-200 text-sm">
+                            <i class="fas fa-motorcycle mr-2"></i> Sewa Motor
+                        </a>
+                    </li>
+                    <li>
+                        <a href="pariwisata.html" class="block py-2 pl-14 pr-6 text-blue-100 hover:text-white hover:bg-blue-800 transition duration-200 text-sm">
+                            <i class="fas fa-bus-alt mr-2"></i> Transport Pariwisata
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li>
+                <a href="#tentang" class="block py-3 px-6 text-white hover:bg-blue-900 transition duration-200 border-l-4 border-transparent hover:border-white flex items-center gap-3">
+                    <i class="fas fa-info-circle w-5 text-center"></i> Tentang Kami
+                </a>
+            </li>
+            <li>
+                <a href="#kontak" class="block py-3 px-6 text-white hover:bg-blue-900 transition duration-200 border-l-4 border-transparent hover:border-white flex items-center gap-3">
+                    <i class="fas fa-envelope w-5 text-center"></i> Kontak
+                </a>
+            </li>
+        </ul>
+
+        <div class="p-6 border-t border-blue-900 text-sm text-blue-200 text-center">
+            <p>Solo, Jawa Tengah</p>
+            <p class="mt-2">&copy; 2026 Maespati.</p>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 md:ml-64 w-full main-content transition-all duration-300">
+        
+        <!-- Home Section -->
+        <section id="home" class="min-h-screen relative flex items-center justify-center p-8 bg-cover bg-center" style="background-image: linear-gradient(rgba(30, 41, 59, 0.82), rgba(30, 41, 59, 0.82)), url('https://placehold.co/1920x1080/1e293b/1e293b?text=+');">
+            <div class="text-center text-white max-w-3xl z-10 pt-16 md:pt-0">
+                <h2 class="text-4xl md:text-6xl font-bold mb-4 leading-tight">Jelajahi Keindahan <span class="text-secondary">Solo</span> Bersama Kami</h2>
+                <p class="text-lg md:text-xl text-gray-300 mb-8">Solusi transportasi terpercaya untuk perjalanan pariwisata, bisnis, dan personal Anda di Kota Solo. Tersedia sewa mobil dan motor dengan pelayanan prima.</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="#layanan" class="bg-primary hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg shadow-lg transition duration-300">Lihat Layanan</a>
+                    <a href="#kontak" class="bg-transparent border-2 border-secondary text-secondary hover:bg-secondary hover:text-dark font-semibold py-3 px-8 rounded-lg shadow-lg transition duration-300">Hubungi Kami</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Layanan Section -->
+        <section id="layanan" class="py-20 px-8 bg-white min-h-screen flex items-center">
+            <div class="max-w-6xl mx-auto w-full">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">Layanan Unggulan Kami</h2>
+                    <div class="h-1 w-20 bg-secondary mx-auto rounded"></div>
+                    <p class="mt-4 text-gray-600 max-w-2xl mx-auto">Kami menyediakan berbagai pilihan kendaraan yang terawat dan siap menemani perjalanan Anda di Solo dan sekitarnya.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Service 1 -->
+                    <div class="bg-light rounded-xl overflow-hidden shadow-md hover:shadow-xl transition duration-300 border border-gray-100 group">
+                        <div class="h-48 bg-gray-200 overflow-hidden relative">
+                             <img src="https://placehold.co/600x400/e2e8f0/475569?text=Sewa+Mobil" alt="Sewa Mobil" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                             <div class="absolute top-4 right-4 bg-primary text-white p-2 rounded-full shadow">
+                                 <i class="fas fa-car-side"></i>
+                             </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-dark mb-2">Sewa Mobil</h3>
+                            <p class="text-gray-600 mb-4 text-sm leading-relaxed">Pilihan mobil Kecil, Besar hingga premium (Brio, Avanza, Innova, Alphard DLL) lengkap dengan supir berpengalaman atau lepas kunci sesuai kebutuhan perjalanan Anda.</p>
+                            <ul class="text-sm text-gray-500 mb-6 space-y-1">
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Unit terbaru, wangi & bersih</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Harga transparan & kompetitif</li>
+                            </ul>
+                            <a href="https://wa.me/6289691441958" class="block w-full text-center bg-gray-100 hover:bg-primary hover:text-white text-dark font-medium py-2 rounded transition duration-300">Pesan Sekarang</a>
+                        </div>
+                    </div>
+
+                    <!-- Service 2 -->
+                    <div class="bg-light rounded-xl overflow-hidden shadow-md hover:shadow-xl transition duration-300 border border-gray-100 group">
+                        <div class="h-48 bg-gray-200 overflow-hidden relative">
+                             <img src="https://placehold.co/600x400/e2e8f0/475569?text=Sewa+Motor" alt="Sewa Motor" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                             <div class="absolute top-4 right-4 bg-secondary text-white p-2 rounded-full shadow">
+                                 <i class="fas fa-motorcycle"></i>
+                             </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-dark mb-2">Sewa Motor</h3>
+                            <p class="text-gray-600 mb-4 text-sm leading-relaxed">Solusi mobilitas lincah menembus jalanan Kota Solo yang indah. Tersedia berbagai pilihan motor matic terawat yang siap pakai.</p>
+                            <ul class="text-sm text-gray-500 mb-6 space-y-1">
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Fasilitas 2 Helm SNI & Jas Hujan</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Persyaratan sewa mudah & cepat</li>
+                            </ul>
+                            <a href="https://wa.me/6289691441958" class="block w-full text-center bg-gray-100 hover:bg-secondary hover:text-dark text-dark font-medium py-2 rounded transition duration-300">Pesan Sekarang</a>
+                        </div>
+                    </div>
+
+                    <!-- Service 3 -->
+                    <div class="bg-light rounded-xl overflow-hidden shadow-md hover:shadow-xl transition duration-300 border border-gray-100 group">
+                        <div class="h-48 bg-gray-200 overflow-hidden relative">
+                             <img src="https://placehold.co/600x400/e2e8f0/475569?text=Paket+Wisata" alt="Paket Wisata" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                             <div class="absolute top-4 right-4 bg-green-600 text-white p-2 rounded-full shadow">
+                                 <i class="fas fa-map-marked-alt"></i>
+                             </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-dark mb-2">Transport Pariwisata</h3>
+                            <p class="text-gray-600 mb-4 text-sm leading-relaxed">Layanan transportasi rombongan wisata, kunjungan kerja, study tour, atau acara hajatan keluarga menggunakan armada elf long atau bus.</p>
+                            <ul class="text-sm text-gray-500 mb-6 space-y-1">
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Kapasitas armada besar</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Driver ramah & menguasai rute</li>
+                            </ul>
+                            <a href="https://wa.me/6289691441958" class="block w-full text-center bg-gray-100 hover:bg-green-600 hover:text-white text-dark font-medium py-2 rounded transition duration-300">Konsultasi Rute</a>
+                        </div>
+                    </div>
+                </div>
+				 <div class="mt-12 text-center">
+                    <p class="text-xs sm:text-sm text-gray-500 mb-4">* klik Navigasi diatas untuk melihat Daftar Harga.</p>
+                 </div>
+            </div>
+        </section>
+
+        <section id="tentang" class="py-20 px-8 bg-white min-h-screen flex items-center">
+            <div class="max-w-6xl mx-auto flex flex-col md:flex-row gap-12 items-center">
+                
+
+                <div class="md:w-1/2 w-full bg-primary text-white p-8 md:p-10 rounded-2xl shadow-xl border-l-8 border-secondary flex flex-col justify-center min-h-[400px]">
+                    <h3 class="text-2xl font-bold text-secondary mb-4">Komitmen & Layanan Kami</h3>
+                    
+                    <div class="space-y-4 text-blue-100 leading-relaxed text-sm md:text-base">
+                        <p>
+                            Kami berkomitmen untuk selalu menghadirkan pelayanan prima dalam setiap perjalanan Anda. Kondisi kebersihan, keandalan mesin, serta kenyamanan interior armada adalah standar utama yang kami tawarkan demi menjaga kepercayaan Anda.
+                        </p>
+                        <p>
+                            Bagi kami, setiap perjalanan bukan sekadar memindahkan Anda dari satu titik ke titik lain, melainkan sebuah pengalaman berharga yang harus berjalan mulus, aman, tanpa kendala, dan berkesan.
+                        </p>
+                        <p>
+                            Baik untuk kebutuhan harian, eksplorasi wisata Kota Solo yang kaya sejarah, kunjungan dinas, maupun acara keluarga besar, kami selalu siap memberikan solusi transportasi yang efisien dan tepercaya.
+                        </p>
+                    </div>
+                </div>
+                <div class="md:w-1/2 w-full">
+                    <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">Mengapa Memilih <span class="text-primary">Maespati Transport</span>?</h2>
+                    <div class="h-1 w-20 bg-primary mb-6 rounded"></div>
+                    <p class="text-gray-600 mb-6 leading-relaxed">
+                        Berdiri di jantung Kota Surakarta (Solo), Maespati Transport hadir untuk memenuhi kebutuhan mobilitas Anda dengan standar pelayanan tinggi. Kami sangat memahami bahwa keamanan dan kenyamanan selama di perjalanan adalah prioritas paling utama bagi setiap pelanggan kami.
+                    </p>
+                    <p class="text-gray-600 mb-8 leading-relaxed">
+                        Dengan pengalaman bertahun-tahun melayani pariwisata lokal maupun rombongan keluarga, kami terus berupaya menyajikan armada berkualitas prima yang didukung oleh kru driver yang profesional, berpengalaman luas, ramah, dan paham rute wisata di wilayah Solo Raya, Yogyakarta, maupun Jawa Tengah.
+                    </p>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="flex items-start gap-3">
+                            <div class="bg-blue-100 text-primary p-2 rounded-lg">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-dark">Aman & Terawat</h4>
+                                <p class="text-xs text-gray-500">Service mesin rutin berkala, Dan dicuci setiap hari.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="bg-yellow-100 text-secondary p-2 rounded-lg">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-dark">Layanan 24/7</h4>
+                                <p class="text-xs text-gray-500">Customer service siap membantu.</p>
+                            </div>
+                        </div>
+                    </div>
+                <p>
+                <div class="grid grid-cols-2 gap-4">
+                        <div class="flex items-start gap-3">
+                            <div class="bg-green-100 text-primary p-2 rounded-lg">
+                                <i class="fas fa-usd"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-dark">Harga Kompetitif</h4>
+                                <p class="text-xs text-gray-500">Harga jujur tanpa biaya tersembunyi.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="bg-pink-100 text-secondary p-2 rounded-lg">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-dark">Proses Mudah</h4>
+                                <p class="text-xs text-gray-500">Booking cepat, Syarat mudah.</p>
+                            </div>
+                        </div>
+                    </div>
+                   </p>
+                </div>
+            </div>
+        </section>
+        <!-- Kontak Section -->
+        <section id="kontak" class="py-20 px-8 bg-gray-50 min-h-screen">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">Hubungi Kami</h2>
+                    <div class="h-1 w-20 bg-secondary mx-auto rounded"></div>
+                    <p class="mt-4 text-gray-600">Butuh informasi lengkap? Rencanakan perjalanan berharga Anda bersama tim profesional kami sekarang.</p>
+                </div>
+
+                <div class="flex flex-col lg:flex-row gap-12 bg-white p-6 md:p-12 rounded-2xl shadow-lg border border-gray-100">
+                    
+                    <!-- Contact Info -->
+                    <div class="lg:w-1/3 space-y-8">
+                        <div>
+                            <h3 class="text-2xl font-bold text-dark mb-6">Informasi Kontak</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-start gap-4">
+                                    <div class="bg-gray-100 p-3 rounded-full text-primary">
+                                        <i class="fas fa-map-marker-alt w-5 text-center"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-dark">Alamat Kantor</h4>
+                                        <p class="text-gray-600 text-sm mt-1">Jl. Maespati No. 2, Kratonan, Serengan, Kota Surakarta, Jawa Tengah 57153</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-4">
+                                    <div class="bg-gray-100 p-3 rounded-full text-green-500">
+                                        <i><a href="https://wa.me/6289691441958" class="fab fa-whatsapp w-5 text-center text-xl"></a></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-dark">WhatsApp / Telepon</h4>
+                                        <p><a href="https://wa.me/6289691441958" class="text-gray-600 text-sm mt-1">+62 896-9144-1958</a></p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-4">
+                                    <div class="bg-gray-100 p-3 rounded-full text-red-500">
+                                        <i class="fas fa-envelope w-5 text-center"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-dark">Email</h4>
+                                        <p class="text-gray-600 text-sm mt-1">info@maespatitransport.com</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-dark mb-3">Media Sosial Kami</h4>
+                            <div class="flex gap-4">
+                                <a href="https://www.instagram.com/sewamobil_motorsolo?igsh=eDI2ZHIwZzl1MnNl" class="bg-gray-100 hover:bg-primary hover:text-white text-gray-600 w-10 h-10 rounded-full flex items-center justify-center shadow transition duration-300">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="https://www.tiktok.com/@maespati_rentcar?_r=1&_t=ZS-97E5gakVSLd" class="bg-gray-100 hover:bg-black hover:text-white text-gray-600 w-10 h-10 rounded-full flex items-center justify-center shadow transition duration-300">
+                                    <i class="fab fa-tiktok"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                <!-- Google Maps Embed -->
+                <div class="mt-12 w-full rounded-2xl overflow-hidden shadow-lg border border-gray-200 h-[400px] relative">
+                    <iframe 
+                        src="https://maps.google.com/maps?width=100%25&amp;height=600&amp;hl=id&amp;q=SEWA%20MOBIL%20%26%20MOTOR%20MAESPATI%20TRANSPORT,%20Kratonan,%20Serengan,%20Surakarta&amp;t=&amp;z=15&amp;ie=UTF8&amp;iwloc=B&amp;output=embed" 
+                        width="100%" 
+                        height="100%" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="Lokasi Maespati Transport">
+                    </iframe>
+                </div>
+                
+                <!-- Link Langsung untuk Tombol Peta -->
+                <div class="mt-6 text-center">
+                    <p class="text-sm text-gray-500 mb-3">Navigasi langsung menggunakan Google Maps di HP Anda:</p>
+                    <a href="https://maps.app.goo.gl/33bWCXZ1xGeneUDa8?g_st=com.google.maps.preview.copy" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-primary text-white hover:bg-blue-800 font-semibold py-3 px-8 rounded-full shadow-lg transition duration-300 transform hover:-translate-y-1">
+                        <i class="fas fa-location-arrow"></i> Buka Lokasi di Google Maps
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // DOM Elements
+        const sidebar = document.getElementById('sidebar');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const closeMenuBtn = document.getElementById('closeMenuBtn');
+        const navLinks = sidebar.querySelectorAll('a');
+
+        // Toggle Sidebar mobile
+        function toggleSidebar() {
+            sidebar.classList.toggle('sidebar-closed');
+            sidebar.classList.toggle('sidebar-open');
+        }
+
+        const btnDaftarHarga = document.getElementById('btnDaftarHarga');
+        const dropdownDaftarHarga = document.getElementById('dropdownDaftarHarga');
+        const iconDaftarHarga = document.getElementById('iconDaftarHarga');
+
+        if (btnDaftarHarga) {
+            btnDaftarHarga.addEventListener('click', (e) => {
+                e.preventDefault();
+                // Menampilkan/menyembunyikan menu anak
+                dropdownDaftarHarga.classList.toggle('hidden');
+                dropdownDaftarHarga.classList.toggle('flex');
+                // Memutar ikon panah ke bawah/atas
+                iconDaftarHarga.classList.toggle('rotate-180');
+            });
+        }
+
+        // Event Listeners
+        mobileMenuBtn.addEventListener('click', toggleSidebar);
+        closeMenuBtn.addEventListener('click', toggleSidebar);
+
+        // Tutup sidebar di HP jika salah satu menu di-klik
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    toggleSidebar();
+                }
+            });
+        });
+
+        // Highlight menu navigasi aktif berdasar scroll halaman
+        window.addEventListener('scroll', () => {
+            let current = '';
+            const sections = document.querySelectorAll('section');
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= (sectionTop - sectionHeight / 3)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('border-white', 'bg-blue-900');
+                if (link.getAttribute('href').includes(current) && current !== '') {
+                    link.classList.add('border-white', 'bg-blue-900');
+                }
+            });
+        });
+
+        // Fungsi pesan sukses form kontak
+        function showMessage() {
+            const msgBox = document.getElementById('successMessage');
+            msgBox.classList.remove('hidden');
+            // Reset form input
+            document.querySelector('form').reset();
+            // Auto hide dalam 6 detik
+            setTimeout(() => {
+                msgBox.classList.add('hidden');
+            }, 6000);
+        }
+    </script>
+</body>
+</html>

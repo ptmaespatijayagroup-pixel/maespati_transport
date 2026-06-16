@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maespati Transport - Layanan Transportasi Pariwisata Solo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#1e40af', // Blue 800
+                        secondary: '#f59e0b', // Amber 500
+                        dark: '#1e293b', // Slate 800
+                        light: '#f8fafc', // Slate 50
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Smooth scrolling untuk jangkar link */
+        html { scroll-behavior: smooth; }
+        
+        /* Custom scrollbar untuk sidebar */
+        .sidebar-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .sidebar-scroll::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+        }
+        .sidebar-scroll::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+        }
+        
+        /* Sembunyikan sidebar di mobile secara default, tampilkan dengan class */
+        @media (max-width: 768px) {
+            .sidebar-open { transform: translateX(0%); }
+            .sidebar-closed { transform: translateX(-100%); }
+            /* Sesuaikan margin konten utama di mobile */
+            .main-content { margin-left: 0 !important; }
+        }
+    </style>
+</head>
+<body class="bg-light text-gray-800 font-sans flex min-h-screen">
+
+    <!-- Mobile Top Bar & Menu Button -->
+    <div class="md:hidden fixed top-0 left-0 w-full z-50 bg-white/95 backdrop-blur shadow-md px-5 py-3 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <!-- LOGO FOTO MOBILE (Aset Lokal) -->
+            <!-- PETUNJUK: Ganti 'logo.png' dengan nama file logo Anda di folder yang sama (Bisa berupa .png, .jpg, atau .jpeg) -->
+            <img src="logo.png" alt="Logo Maespati Mobile" class="w-10 h-10 object-contain flex-shrink-0" onerror="this.style.display='none';">
+            <h1 class="text-xl font-bold text-primary tracking-wide">MAESPATI <span class="text-secondary text-base">Transport</span></h1>
+        </div>
+        <button id="mobileMenuBtn" class="bg-primary text-white p-2 px-3 rounded-md shadow hover:bg-blue-700 transition duration-300 focus:outline-none">
+            <i class="fas fa-bars text-lg"></i>
+        </button>
+    </div>
+
+    <!-- Sidebar Navigation -->
+    <nav id="sidebar" class="bg-primary text-white w-64 fixed h-full z-40 transition-transform duration-300 ease-in-out flex flex-col sidebar-closed md:translate-x-0 md:sidebar-open sidebar-scroll overflow-y-auto">
+        <div class="p-6 border-b border-blue-900 flex flex-col items-center text-center relative">
+            <!-- Close Button untuk Mobile Sidebar -->
+            <button id="closeMenuBtn" class="md:hidden absolute top-4 right-4 text-blue-200 hover:text-white transition duration-200">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+
+            <!-- LOGO FOTO UTAMA SIDEBAR (Aset Lokal) -->
+            <!-- PETUNJUK: Ganti 'logo.png' dengan nama file logo Anda di folder yang sama (Bisa berupa .png, .jpg, atau .jpeg) -->
+            <div class="mb-4 transform hover:scale-105 transition-transform duration-300">
+                <img src="logo.png" alt="Logo Maespati Transport" class="w-24 h-24 object-contain" onerror="this.style.display='none';">
+            </div>
+            
+            <div>
+                <h1 class="text-2xl font-bold text-secondary tracking-wider">MAESPATI</h1>
+                <p class="text-sm text-blue-200">Transport</p>
+            </div>
+        </div>
+        
+        <ul class="flex-grow py-6 space-y-2">
+            <li>
+                <a href="index.html#home" class="block py-3 px-6 text-white hover:bg-blue-900 transition duration-200 border-l-4 border-transparent hover:border-white flex items-center gap-3">
+                    <i class="fas fa-home w-5 text-center"></i> Beranda
+                </a>
+            </li>
+            <li>
+                <a href="index.html#layanan" class="block py-3 px-6 text-white hover:bg-blue-900 transition duration-200 border-l-4 border-transparent hover:border-white flex items-center gap-3">
+                    <i class="fas fa-car w-5 text-center"></i> Layanan Kami
+                </a>
+            </li>
+            
+            <li class="relative">
+                <button id="btnDaftarHarga" class="w-full text-left py-3 px-6 text-white hover:bg-blue-900 transition duration-200 border-l-4 border-transparent flex justify-between items-center group focus:outline-none">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-tags w-5 text-center"></i> Daftar Harga
+                    </div>
+                    <i id="iconDaftarHarga" class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
+                </button>
+                
+                <!-- Sub-menu Dropdown (Membuka file HTML terpisah) -->
+                <ul id="dropdownDaftarHarga" class="hidden bg-blue-900/50 flex-col overflow-hidden transition-all duration-300">
+                    <li>
+                        <a href="sewamobil.html" class="block py-2 pl-14 pr-6 text-blue-100 hover:text-white hover:bg-blue-800 transition duration-200 text-sm">
+                            <i class="fas fa-car-side mr-2"></i> Sewa Mobil
+                        </a>
+                    </li>
+                    <li>
+                        <a href="sewamotor.html" class="block py-2 pl-14 pr-6 text-blue-100 hover:text-white hover:bg-blue-800 transition duration-200 text-sm">
+                            <i class="fas fa-motorcycle mr-2"></i> Sewa Motor
+                        </a>
+                    </li>
+                    <li>
+                        <a href="pariwisata.html" class="block py-2 pl-14 pr-6 text-blue-100 hover:text-white hover:bg-blue-800 transition duration-200 text-sm">
+                            <i class="fas fa-bus-alt mr-2"></i> Transport Pariwisata
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li>
+                <a href="index.html#tentang" class="block py-3 px-6 text-white hover:bg-blue-900 transition duration-200 border-l-4 border-transparent hover:border-white flex items-center gap-3">
+                    <i class="fas fa-info-circle w-5 text-center"></i> Tentang Kami
+                </a>
+            </li>
+            <li>
+                <a href="index.html#kontak" class="block py-3 px-6 text-white hover:bg-blue-900 transition duration-200 border-l-4 border-transparent hover:border-white flex items-center gap-3">
+                    <i class="fas fa-envelope w-5 text-center"></i> Kontak
+                </a>
+            </li>
+        </ul>
+
+        <div class="p-6 border-t border-blue-900 text-sm text-blue-200 text-center">
+            <p>Solo, Jawa Tengah</p>
+            <p class="mt-2">&copy; 2026 Maespati.</p>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 md:ml-64 w-full main-content transition-all duration-300">
+
+        <!-- Daftar Harga Section -->
+        <section id="harga" class="py-20 px-4 sm:px-8 bg-gray-50 min-h-screen flex items-center">
+            <div class="max-w-6xl mx-auto w-full">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">Daftar Harga Sewa Motor</h2>
+                    <div class="h-1 w-20 bg-secondary mx-auto rounded"></div>
+                    <p class="mt-4 text-gray-600 max-w-2xl mx-auto">Tarif estimasi sewa kendaraan harian (dalam kota Solo). Kami menawarkan harga terbaik dengan kondisi armada yang prima.</p>
+                </div>
+
+                <!-- Grid Layout: 2 kolom di HP, 3 di tablet, 4 di desktop -->
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
+                    
+                    <!-- Harga Item 1 -->
+                   <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-xl transition image-center items-center text-center">
+                <div>
+                    <img src="pcx.png" width="80%" height="80%" />
+                </div>
+                        <h4 class="font-bold text-dark text-sm sm:text-lg mb-1">PCX</h4>
+                        <p class="text-xs text-gray-500 mb-3">Motor Premium</p>
+                        <div class="mt-auto">
+                            <span class="text-[10px] sm:text-xs text-gray-500">mulai dari</span>
+                            <p class="font-bold text-secondary text-base sm:text-xl">Rp 150.000<span class="text-[10px] sm:text-xs text-gray-400 font-normal">/24 jam</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Harga Item 2 -->
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-xl transition image-center items-center text-center">
+                <div>
+                    <img src="nmax.jpeg" width="100%" height="100%" />
+                </div>
+                        <h4 class="font-bold text-dark text-sm sm:text-lg mb-1">NMAX</h4>
+                        <p class="text-xs text-gray-500 mb-3">Motor Premium</p>
+                        <div class="mt-auto">
+                            <span class="text-[10px] sm:text-xs text-gray-500">mulai dari</span>
+                            <p class="font-bold text-secondary text-base sm:text-xl">Rp 150.000<span class="text-[10px] sm:text-xs text-gray-400 font-normal">/24 jam</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Harga Item 3 -->
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-xl transition image-center items-center text-center">
+                <div>
+                    <img src="nmaxneo.jpeg" width="80%" height="80%" />
+                </div>
+                        <h4 class="font-bold text-dark text-sm sm:text-lg mb-1">NMAX NEO</h4>
+                        <p class="text-xs text-gray-500 mb-3">Motor Premium</p>
+                        <div class="mt-auto">
+                            <span class="text-[10px] sm:text-xs text-gray-500">mulai dari</span>
+                            <p class="font-bold text-secondary text-base sm:text-xl">Rp 150.000<span class="text-[10px] sm:text-xs text-gray-400 font-normal">/24 jam</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Harga Item 4 -->
+                   <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-xl transition image-center items-center text-center">
+                <div>
+                    <img src="stylo.png" width="80%" height="80%" />
+                </div>
+                        <h4 class="font-bold text-dark text-sm sm:text-lg mb-1">STYLO</h4>
+                        <p class="text-xs text-gray-500 mb-3">Motor Matic</p>
+                        <div class="mt-auto">
+                            <span class="text-[10px] sm:text-xs text-gray-500">mulai dari</span>
+                            <p class="font-bold text-secondary text-base sm:text-xl">Rp 150.000<span class="text-[10px] sm:text-xs text-gray-400 font-normal">/24 jam</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Harga Item 5 -->
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-xl transition image-center items-center text-center">
+                <div>
+                    <img src="scopy.png" width="80%" height="80%" />
+                </div>
+                        <h4 class="font-bold text-dark text-sm sm:text-lg mb-1">SCOOPY</h4>
+                        <p class="text-xs text-gray-500 mb-3">Motor Matic</p>
+                        <div class="mt-auto">
+                            <span class="text-[10px] sm:text-xs text-gray-500">mulai dari</span>
+                            <p class="font-bold text-secondary text-base sm:text-xl">Rp 110.000<span class="text-[10px] sm:text-xs text-gray-400 font-normal">/24 jam</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Harga Item 6 -->
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-xl transition image-center items-center text-center">
+                <div>
+                    <img src="vario.png" width="100%" height="100%" />
+                </div>
+                        <h4 class="font-bold text-dark text-sm sm:text-lg mb-1">VARIO</h4>
+                        <p class="text-xs text-gray-500 mb-3">Motor Matic</p>
+                        <div class="mt-auto">
+                            <span class="text-[10px] sm:text-xs text-gray-500">mulai dari</span>
+                            <p class="font-bold text-secondary text-base sm:text-xl">Rp 120.000<span class="text-[10px] sm:text-xs text-gray-400 font-normal">/24 jam</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Harga Item 7 -->
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-xl transition image-center items-center text-center">
+                <div>
+                    <img src="fazio.jpeg" width="80%" height="80%" />
+                </div>
+                        <h4 class="font-bold text-dark text-sm sm:text-lg mb-1">FAZZIO</h4>
+                        <p class="text-xs text-gray-500 mb-3">Motor Matic</p>
+                        <div class="mt-auto">
+                            <span class="text-[10px] sm:text-xs text-gray-500">mulai dari</span>
+                            <p class="font-bold text-secondary text-base sm:text-xl">Rp 100.000<span class="text-[10px] sm:text-xs text-gray-400 font-normal">/24 jam</span></p>
+                        </div>
+                    </div>
+                <!-- Harga Item 8 -->
+                   <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-xl transition image-center items-center text-center">
+                <div>
+                    <img src="beatstret.png" width="90%" height="90%" />
+                </div>
+                        <h4 class="font-bold text-dark text-sm sm:text-lg mb-1">BEAT STREET</h4>
+                        <p class="text-xs text-gray-500 mb-3">Motor Matic</p>
+                        <div class="mt-auto">
+                            <span class="text-[10px] sm:text-xs text-gray-500">mulai dari</span>
+                            <p class="font-bold text-secondary text-base sm:text-xl">Rp 100.000<span class="text-[10px] sm:text-xs text-gray-400 font-normal">/24 jam</span></p>
+                        </div>
+                    </div>
+
+                </div>
+                
+                <div class="mt-12 text-center">
+                    <p class="text-xs sm:text-sm text-gray-500 mb-4">* Harga tidak mengikat dan dapat berubah sewaktu-waktu. Hubungi admin kami untuk perjalanan luar kota.</p>
+                    <a href="https://wa.me/6289691441958" class="inline-block bg-primary hover:bg-blue-700 text-white font-semibold py-2.5 px-6 rounded-lg transition duration-300">Tanya Ketersediaan</a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // DOM Elements
+        const sidebar = document.getElementById('sidebar');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const closeMenuBtn = document.getElementById('closeMenuBtn');
+        const navLinks = sidebar.querySelectorAll('a');
+
+        // Toggle Sidebar mobile
+        function toggleSidebar() {
+            sidebar.classList.toggle('sidebar-closed');
+            sidebar.classList.toggle('sidebar-open');
+        }
+
+        const btnDaftarHarga = document.getElementById('btnDaftarHarga');
+        const dropdownDaftarHarga = document.getElementById('dropdownDaftarHarga');
+        const iconDaftarHarga = document.getElementById('iconDaftarHarga');
+
+        if (btnDaftarHarga) {
+            btnDaftarHarga.addEventListener('click', (e) => {
+                e.preventDefault();
+                // Menampilkan/menyembunyikan menu anak
+                dropdownDaftarHarga.classList.toggle('hidden');
+                dropdownDaftarHarga.classList.toggle('flex');
+                // Memutar ikon panah ke bawah/atas
+                iconDaftarHarga.classList.toggle('rotate-180');
+            });
+        }
+
+        // Event Listeners
+        mobileMenuBtn.addEventListener('click', toggleSidebar);
+        closeMenuBtn.addEventListener('click', toggleSidebar);
+
+        // Tutup sidebar di HP jika salah satu menu di-klik
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    toggleSidebar();
+                }
+            });
+        });
+
+        // Highlight menu navigasi aktif berdasar scroll halaman
+        window.addEventListener('scroll', () => {
+            let current = '';
+            const sections = document.querySelectorAll('section');
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= (sectionTop - sectionHeight / 3)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('border-white', 'bg-blue-900');
+                if (link.getAttribute('href').includes(current) && current !== '') {
+                    link.classList.add('border-white', 'bg-blue-900');
+                }
+            });
+        });
+
+        // Fungsi pesan sukses form kontak
+        function showMessage() {
+            const msgBox = document.getElementById('successMessage');
+            msgBox.classList.remove('hidden');
+            // Reset form input
+            document.querySelector('form').reset();
+            // Auto hide dalam 6 detik
+            setTimeout(() => {
+                msgBox.classList.add('hidden');
+            }, 6000);
+        }
+    </script>
+</body>
+</html>
